@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="ex0-NS-0v8">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.14"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Photos View Controller-->
+        <scene sceneID="vYK-eV-YA5">
+            <objects>
+                <collectionViewController id="JCG-Lk-JKF" customClass="PhotosViewController" customModule="Example" customModuleProvider="target" sceneMemberID="viewController">
+                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="Eot-DC-6sB">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="lrq-G3-MsQ">
+                            <size key="itemSize" width="177" height="183"/>
+                            <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                            <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                        </collectionViewFlowLayout>
+                        <cells>
+                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="PhotoCell" id="vd1-f2-obT" customClass="PhotoCollectionViewCell" customModule="Example" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="0.0" width="177" height="183"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
+                                    <rect key="frame" x="0.0" y="0.0" width="177" height="183"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="xJ3-VW-h7H">
+                                            <rect key="frame" x="0.0" y="0.0" width="177" height="183"/>
+                                        </imageView>
+                                    </subviews>
+                                </view>
+                                <constraints>
+                                    <constraint firstAttribute="bottom" secondItem="xJ3-VW-h7H" secondAttribute="bottom" id="Hc4-i6-wSw"/>
+                                    <constraint firstItem="xJ3-VW-h7H" firstAttribute="top" secondItem="vd1-f2-obT" secondAttribute="top" id="R1J-M6-Rch"/>
+                                    <constraint firstItem="xJ3-VW-h7H" firstAttribute="leading" secondItem="vd1-f2-obT" secondAttribute="leading" id="uKZ-fh-Ymp"/>
+                                    <constraint firstAttribute="trailing" secondItem="xJ3-VW-h7H" secondAttribute="trailing" id="x73-gG-TfS"/>
+                                </constraints>
+                                <connections>
+                                    <outlet property="imageView" destination="xJ3-VW-h7H" id="C2w-T7-ajx"/>
+                                </connections>
+                            </collectionViewCell>
+                        </cells>
+                        <connections>
+                            <outlet property="dataSource" destination="JCG-Lk-JKF" id="vTr-Sc-VQ1"/>
+                            <outlet property="delegate" destination="JCG-Lk-JKF" id="lme-vh-HUI"/>
+                        </connections>
+                    </collectionView>
+                    <navigationItem key="navigationItem" id="bWl-Bl-HBz">
+                        <barButtonItem key="leftBarButtonItem" title="Clear Cache" id="47p-Bj-kdN">
+                            <connections>
+                                <action selector="handleClickClearCache:" destination="JCG-Lk-JKF" id="KaM-vQ-WG5"/>
+                            </connections>
+                        </barButtonItem>
+                        <rightBarButtonItems>
+                            <barButtonItem id="EmR-bg-1bb">
+                                <switch key="customView" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" id="cyc-gd-600">
+                                    <rect key="frame" x="308" y="6.5" width="51" height="31"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <connections>
+                                        <action selector="toggleLoadOnlineImages:" destination="JCG-Lk-JKF" eventType="valueChanged" id="kqh-3X-hLb"/>
+                                    </connections>
+                                </switch>
+                            </barButtonItem>
+                            <barButtonItem title="Online Images" id="Wsd-KO-4MZ"/>
+                        </rightBarButtonItems>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="loadImageSettingSwitch" destination="cyc-gd-600" id="REa-DB-Sjv"/>
+                    </connections>
+                </collectionViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="gFn-BG-piX" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="240.80000000000001" y="179.46026986506749"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="0vL-Iw-TNP">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="ex0-NS-0v8" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="UZU-B1-eRc">
+                        <rect key="frame" x="0.0" y="20" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="JCG-Lk-JKF" kind="relationship" relationship="rootViewController" id="ysN-Gk-wJP"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Br1-Jo-8TY" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-594.39999999999998" y="124.58770614692655"/>
+        </scene>
+    </scenes>
+</document>
