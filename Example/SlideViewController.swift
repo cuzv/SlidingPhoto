@@ -117,7 +117,7 @@ class SlideViewController: SlidingPhotoViewController {
         
         if cell.index == 1 { // GIF
             let displayView = cell.displayView as! AnimatedImageView
-            let rect = displayView.convert(displayView.frame, to: cell)
+            let rect = displayView.convert(displayView.bounds, to: cell)
             if rect.contains(location) {
                 if displayView.isAnimating {
                     displayView.stopAnimating()

@@ -166,12 +166,12 @@ private final class PresentationAnimator: NSObject, UIViewControllerAnimatedTran
             
             let view = UIView()
             
-            let fromRect = thumbnail.convert(thumbnail.frame, to: toView)
+            let fromRect = thumbnail.convert(thumbnail.bounds, to: toView)
             if isContentsClippedToTop {
                 // Always display top content
                 view.layer.anchorPoint = CGPoint(x: 0.5, y: 0)
 
-                var destRect = displayView.convert(displayView.frame, to: toView)
+                var destRect = displayView.convert(displayView.bounds, to: toView)
                 let scale = thumbnail.bounds.width / destRect.width
                 destRect.size.height = thumbnail.bounds.height / scale
                 // y = minY, cuz anchorPoint = (0.5, 0)
@@ -199,7 +199,7 @@ private final class PresentationAnimator: NSObject, UIViewControllerAnimatedTran
                 if isContentsClippedToTop {
                     transitionView?.transform = .identity
                 }
-                transitionView?.frame = displayView.convert(displayView.frame, to: toView)
+                transitionView?.frame = displayView.convert(displayView.bounds, to: toView)
                 transitionView?.contentMode = displayView.contentMode // .scaleAspectFill
                 transitionView?.layer.contentsRect = displayView.layer.contentsRect // {0, 0, 1, 1}
             } else {
@@ -253,7 +253,7 @@ private final class DismissionAnimator: NSObject, UIViewControllerAnimatedTransi
                 view.layer.anchorPoint = CGPoint(x: 0.5, y: 0)
                 cell.scrollView.contentOffset = .zero
             }
-            view.frame = displayView.convert(displayView.frame, to: fromView)
+            view.frame = displayView.convert(displayView.bounds, to: fromView)
             view.sp.image = displayView.image
             fromView.addSubview(view)
             transitionView = view
@@ -265,9 +265,9 @@ private final class DismissionAnimator: NSObject, UIViewControllerAnimatedTransi
             backgroundView.alpha = 0
             
             if let thumbnail = thumbnail {
-                let destRect = thumbnail.convert(thumbnail.frame, to: fromView)
+                let destRect = thumbnail.convert(thumbnail.bounds, to: fromView)
                 if isContentsClippedToTop {
-                    var rect = displayView.convert(displayView.frame, to: fromView)
+                    var rect = displayView.convert(displayView.bounds, to: fromView)
                     var height = thumbnail.bounds.height / thumbnail.bounds.width * displayView.bounds.width
                     if height.isNaN {
                         height = displayView.bounds.width
