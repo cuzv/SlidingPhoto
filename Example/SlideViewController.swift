@@ -28,8 +28,6 @@ class SlideViewController: SlidingPhotoViewController {
         self.vc = vc
         self.fromPage = fromPage
         super.init(nibName: nil, bundle: nil)
-        modalPresentationStyle = .overFullScreen
-        modalTransitionStyle = .crossDissolve
     }
     
     required init?(coder aDecoder: NSCoder) {

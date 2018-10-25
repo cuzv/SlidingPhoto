@@ -20,6 +20,7 @@ open class SlidingPhotoViewController: UIViewController {
     }
 
     private func setup() {
+        modalPresentationStyle = .custom
         transitioningDelegate = self
     }
     
