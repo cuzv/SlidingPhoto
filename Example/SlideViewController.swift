@@ -51,10 +51,10 @@ class SlideViewController: SlidingPhotoViewController {
         
         pager.numberOfPages = localUrls.count
         pager.currentPage = fromPage
-        contentView.addSubview(pager)
+        view.addSubview(pager)
         pager.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         if #available(iOS 11.0, *) {
-            pager.bottomAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.bottomAnchor).isActive = true
+            pager.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
         } else {
             pager.bottomAnchor.constraint(equalTo: bottomLayoutGuide.topAnchor).isActive = true
         }

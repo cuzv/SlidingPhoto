@@ -24,36 +24,33 @@ open class SlidingPhotoViewController: UIViewController {
         transitioningDelegate = self
     }
     
-    public let contentView: UIView = {
+    open var dimmingView: UIView = {
         let view = UIView()
         view.backgroundColor = .black
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
     
-    open var backgroundViewColor: UIColor? {
-        get {
-            return contentView.backgroundColor
-        }
-        set {
-            contentView.backgroundColor = newValue
-        }
-    }
-
     public let slidingPhotoView: SlidingPhotoView = {
         let view = SlidingPhotoView()
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
+    
+    var otherViews: [UIView] {
+        return view.subviews.filter({ $0 != slidingPhotoView })
+    }
 
     override open func viewDidLoad() {
         super.viewDidLoad()
         
-        view.addSubview(contentView)
-        contentView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-        contentView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        contentView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-        contentView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        view.backgroundColor = .clear
+        
+        view.addSubview(dimmingView)
+        dimmingView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        dimmingView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        dimmingView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        dimmingView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
 
         view.addSubview(slidingPhotoView)
         slidingPhotoView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
@@ -86,7 +83,7 @@ extension SlidingPhotoViewController {
             let translation = sender.translation(in: sender.view).y
             let ratio = abs(translation / view.bounds.size.height)
             slidingPhotoView.transform = CGAffineTransform(translationX: 0, y: translation)
-            contentView.alpha = 1 - ratio
+            otherViews.forEach({ $0.alpha = 1 - ratio })
         case .ended:
             let velocity = sender.velocity(in: sender.view).y
             let translation = sender.translation(in: sender.view).y
@@ -98,19 +95,19 @@ extension SlidingPhotoViewController {
                 let translationY = height * (isMoveUp ? -1.0 : 1.0)
                 UIView.animate(withDuration: duration, delay: 0, options: [.curveEaseOut, .beginFromCurrentState], animations: {
                     self.slidingPhotoView.transform = CGAffineTransform(translationX: 0, y: translationY)
-                    self.contentView.alpha = 0
+                    self.otherViews.forEach({ $0.alpha = 0 })
                 }, completion: { _ in
                     self.presentingViewController?.dismiss(animated: false, completion: nil)
                 })
             } else {
                 UIView.animate(withDuration: 0.25, delay: 0, options: [.curveEaseOut, .beginFromCurrentState, .allowUserInteraction], animations: {
                     self.slidingPhotoView.transform = .identity
-                    self.contentView.alpha = 1
+                    self.otherViews.forEach({ $0.alpha = 1 })
                 }, completion: nil)
             }
         default:
             slidingPhotoView.transform = .identity
-            contentView.alpha = 1
+            otherViews.forEach({ $0.alpha = 1 })
         }
     }
 }
@@ -146,7 +143,7 @@ private final class PresentationAnimator: NSObject, UIViewControllerAnimatedTran
         container.addSubview(toView)
         toView.layoutIfNeeded()
         
-        let backgroundView = vc.contentView
+        let otherViews = vc.otherViews
         let slidingPhotoView = vc.slidingPhotoView
         let currentPage = slidingPhotoView.currentPage
         let cell = slidingPhotoView.acquireCell(for: currentPage)
@@ -191,9 +188,9 @@ private final class PresentationAnimator: NSObject, UIViewControllerAnimatedTran
         }
 
         displayView.alpha = 0
-        backgroundView.alpha = 0
+        otherViews.forEach({ $0.alpha = 0 })
         UIView.animate(withDuration: transitionDuration(using: transitionContext), delay: 0, usingSpringWithDamping: 0.9, initialSpringVelocity: 10, options: [.curveEaseOut, .beginFromCurrentState], animations: {
-            backgroundView.alpha = 1
+            otherViews.forEach({ $0.alpha = 1 })
 
             if nil != thumbnail {
                 if isContentsClippedToTop {
@@ -236,7 +233,7 @@ private final class DismissionAnimator: NSObject, UIViewControllerAnimatedTransi
         let container = transitionContext.containerView
         container.addSubview(fromView)
         
-        let backgroundView = vc.contentView
+        let otherViews = vc.otherViews
         let slidingPhotoView = vc.slidingPhotoView
         let currentPage = slidingPhotoView.currentPage
         let cell = slidingPhotoView.acquireCell(for: currentPage)
@@ -262,8 +259,8 @@ private final class DismissionAnimator: NSObject, UIViewControllerAnimatedTransi
         }
         
         UIView.animate(withDuration: transitionDuration(using: transitionContext), delay: 0, usingSpringWithDamping: 0.9, initialSpringVelocity: 10, options: [.curveEaseOut, .beginFromCurrentState], animations: {
-            backgroundView.alpha = 0
-            
+            otherViews.forEach({ $0.alpha = 0 })
+
             if let thumbnail = thumbnail {
                 let destRect = thumbnail.convert(thumbnail.bounds, to: fromView)
                 if isContentsClippedToTop {
@@ -289,7 +286,7 @@ private final class DismissionAnimator: NSObject, UIViewControllerAnimatedTransi
             }
         }, completion: { _ in
             displayView.alpha = 1
-            backgroundView.alpha = 1
+            otherViews.forEach({ $0.alpha = 1 })
             transitionView?.layer.anchorPoint = CGPoint(x: 0.5, y: 0.5)
             transitionView?.transform = .identity
             transitionView?.removeFromSuperview()
