@@ -62,6 +62,9 @@ open class SlidingPhotoViewController: UIViewController {
         slidingPhotoView.dataSource = self
         slidingPhotoView.panGestureRecognizer.addTarget(self, action: #selector(onPan(sender:)))
     }
+    
+    open func willTriggerInteractiveDismiss() {
+    }
 }
 
 extension SlidingPhotoViewController: SlidingPhotoViewDataSource, SlidingPhotoViewDelegate {
@@ -92,6 +95,8 @@ extension SlidingPhotoViewController {
             let isMoveUp = velocity < -1000 && translation < 0
             let isMoveDown = velocity > 1000 && translation > 0
             if isMoveUp || isMoveDown {
+                willTriggerInteractiveDismiss()
+                
                 let height = slidingPhotoView.bounds.size.height
                 let duration = TimeInterval(0.25 * (height - abs(translation)) / height)
                 let translationY = height * (isMoveUp ? -1.0 : 1.0)

@@ -86,6 +86,10 @@ class SlideViewController: SlidingPhotoViewController {
         }
     }
     
+    override func willTriggerInteractiveDismiss() {
+        print("willTriggerInteractiveDismiss")
+    }
+    
     override func numberOfItems(in slidingPhotoView: SlidingPhotoView) -> Int {
         return localUrls.count
     }
