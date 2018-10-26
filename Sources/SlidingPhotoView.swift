@@ -16,10 +16,15 @@ open class SlidingPhotoView: UIView {
         }
     }
     
-    open private(set) var currentPage: Int = 0 {
-        didSet {
-            if oldValue != currentPage {
-                delegate?.slidingPhotoView?(self, didUpdateFocus: acquireCell(for: currentPage))
+    private var page: Int = -1
+    open private(set) var currentPage: Int {
+        get {
+            return page < 0 ? 0 : page
+        }
+        set {
+            if newValue != page {
+                page = newValue
+                delegate?.slidingPhotoView?(self, didUpdateFocus: acquireCell(for: page))
             }
         }
     }
