@@ -26,6 +26,8 @@ public extension SlidingPhotoCompatible {
     }
 }
 
+// MARK: - 
+
 public extension SlidingPhoto where Base: UIView {
     public var image: UIImage? {
         get {
@@ -87,3 +89,17 @@ public extension SlidingPhoto where Base: UIImageView {
 }
 
 extension UIView: SlidingPhotoCompatible {}
+
+// MARK: -
+
+private var alphaKey: Void?
+extension SlidingPhoto where Base: UIView {
+    var alpha: CGFloat {
+        get {
+            return objc_getAssociatedObject(base, &alphaKey) as? CGFloat ?? base.alpha
+        }
+        set {
+            objc_setAssociatedObject(base, &alphaKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+    }
+}

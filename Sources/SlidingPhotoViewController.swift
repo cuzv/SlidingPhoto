@@ -79,11 +79,13 @@ extension SlidingPhotoViewController: SlidingPhotoViewDataSource, SlidingPhotoVi
 extension SlidingPhotoViewController {
     @objc private func onPan(sender: UIPanGestureRecognizer) {
         switch sender.state {
+        case .began:
+            otherViews.forEach({ $0.sp.alpha = $0.alpha })
         case .changed:
             let translation = sender.translation(in: sender.view).y
             let ratio = abs(translation / view.bounds.size.height)
             slidingPhotoView.transform = CGAffineTransform(translationX: 0, y: translation)
-            otherViews.forEach({ $0.alpha = 1 - ratio })
+            otherViews.forEach({ let alpha = $0.sp.alpha - ratio; $0.alpha = alpha < 0 ? 0 : alpha })
         case .ended:
             let velocity = sender.velocity(in: sender.view).y
             let translation = sender.translation(in: sender.view).y
@@ -102,12 +104,12 @@ extension SlidingPhotoViewController {
             } else {
                 UIView.animate(withDuration: 0.25, delay: 0, options: [.curveEaseOut, .beginFromCurrentState, .allowUserInteraction], animations: {
                     self.slidingPhotoView.transform = .identity
-                    self.otherViews.forEach({ $0.alpha = 1 })
+                    self.otherViews.forEach({ $0.alpha = $0.sp.alpha })
                 }, completion: nil)
             }
         default:
             slidingPhotoView.transform = .identity
-            otherViews.forEach({ $0.alpha = 1 })
+            otherViews.forEach({ $0.alpha = $0.sp.alpha })
         }
     }
 }
