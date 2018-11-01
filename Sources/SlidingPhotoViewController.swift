@@ -188,7 +188,7 @@ private final class PresentationAnimator: NSObject, UIViewControllerAnimatedTran
 
             view.sp.image = thumbnail.image
             
-            toView.addSubview(view)
+            toView.insertSubview(view, aboveSubview: vc.slidingPhotoView)
             transitionView = view
         } else {
             displayView.transform = CGAffineTransform(scaleX: 0.1, y: 0.1)
@@ -259,7 +259,7 @@ private final class DismissionAnimator: NSObject, UIViewControllerAnimatedTransi
             }
             view.frame = displayView.convert(displayView.bounds, to: fromView)
             view.sp.image = displayView.image
-            fromView.addSubview(view)
+            fromView.insertSubview(view, aboveSubview: vc.slidingPhotoView)
             transitionView = view
             
             displayView.alpha = 0
