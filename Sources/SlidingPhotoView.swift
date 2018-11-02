@@ -23,7 +23,9 @@ open class SlidingPhotoView: UIView {
         }
         set {
             if newValue != page {
-                page = newValue
+                if newValue >= 0 {
+                    page = newValue
+                }
                 delegate?.slidingPhotoView?(self, didUpdateFocus: acquireCell(for: page))
             }
         }
@@ -131,6 +133,9 @@ open class SlidingPhotoView: UIView {
         scrollView.contentSize = CGSize(width: CGFloat(numberOfItems) * itemWidth, height: itemHeight)
         scrollView.scrollRectToVisible(CGRect(x: itemWidth * CGFloat(currentPage), y: 0, width: itemWidth, height: itemHeight), animated: false)
         scrollViewDidScroll(scrollView)
+        
+        // Force call `didUpdateFocus`
+        currentPage = -1
     }
     
     private var reusableCells: [SlidingPhotoViewCell] = []
