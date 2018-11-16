@@ -141,7 +141,11 @@ private final class PresentationAnimator: NSObject, UIViewControllerAnimatedTran
     }
     
     public func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
-        guard let toView = transitionContext.viewController(forKey: .to)?.view else {
+        guard
+            let from = transitionContext.viewController(forKey: .from),
+            let to = transitionContext.viewController(forKey: .to),
+            let toView = to.view
+        else {
             return transitionContext.completeTransition(false)
         }
         
@@ -196,6 +200,7 @@ private final class PresentationAnimator: NSObject, UIViewControllerAnimatedTran
 
         displayView.alpha = 0
         otherViews.forEach({ $0.alpha = 0 })
+        from.beginAppearanceTransition(false, animated: true)
         UIView.animate(withDuration: transitionDuration(using: transitionContext), delay: 0, usingSpringWithDamping: 0.9, initialSpringVelocity: 10, options: [.curveEaseOut, .beginFromCurrentState], animations: {
             otherViews.forEach({ $0.alpha = 1 })
 
@@ -217,6 +222,7 @@ private final class PresentationAnimator: NSObject, UIViewControllerAnimatedTran
             }
             displayView.alpha = 1
             transitionView?.removeFromSuperview()
+            from.endAppearanceTransition()
             transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
         })
     }
@@ -234,9 +240,14 @@ private final class DismissionAnimator: NSObject, UIViewControllerAnimatedTransi
     }
 
     public func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
-        guard let fromView = transitionContext.viewController(forKey: .from)?.view else {
+        guard
+            let from = transitionContext.viewController(forKey: .from),
+            let fromView = from.view,
+            let to = transitionContext.viewController(forKey: .to)
+        else {
             return transitionContext.completeTransition(false)
         }
+
         let container = transitionContext.containerView
         container.addSubview(fromView)
         
@@ -265,6 +276,7 @@ private final class DismissionAnimator: NSObject, UIViewControllerAnimatedTransi
             displayView.alpha = 0
         }
         
+        to.beginAppearanceTransition(true, animated: true)
         UIView.animate(withDuration: transitionDuration(using: transitionContext), delay: 0, usingSpringWithDamping: 0.9, initialSpringVelocity: 10, options: [.curveEaseOut, .beginFromCurrentState], animations: {
             otherViews.forEach({ $0.alpha = 0 })
 
@@ -297,6 +309,7 @@ private final class DismissionAnimator: NSObject, UIViewControllerAnimatedTransi
             transitionView?.layer.anchorPoint = CGPoint(x: 0.5, y: 0.5)
             transitionView?.transform = .identity
             transitionView?.removeFromSuperview()
+            to.endAppearanceTransition()
             transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
         })
     }
