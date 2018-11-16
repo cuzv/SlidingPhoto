@@ -104,7 +104,9 @@ extension SlidingPhotoViewController {
                     self.slidingPhotoView.transform = CGAffineTransform(translationX: 0, y: translationY)
                     self.otherViews.forEach({ $0.alpha = 0 })
                 }, completion: { _ in
+                    self.presentingViewController?.beginAppearanceTransition(true, animated: false)
                     self.presentingViewController?.dismiss(animated: false, completion: nil)
+                    self.presentingViewController?.endAppearanceTransition()
                 })
             } else {
                 UIView.animate(withDuration: 0.25, delay: 0, options: [.curveEaseOut, .beginFromCurrentState, .allowUserInteraction], animations: {
