@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1D0DEB24ADC79A1E4A485605 /* Pods_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B45E00F9AAE44F8E3A7AEF4 /* Pods_Example.framework */; };
+		379699D821C8A218004FD35C /* NaN.swift in Sources */ = {isa = PBXBuildFile; fileRef = 379699D721C8A218004FD35C /* NaN.swift */; };
 		F961F2AB2152713500719E85 /* NibPhotoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = F961F2A82152713500719E85 /* NibPhotoCell.xib */; };
 		F961F2AC2152713500719E85 /* CustomPhotoViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F961F2A92152713500719E85 /* CustomPhotoViewCell.swift */; };
 		F961F2AD2152713500719E85 /* NibPhotoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F961F2AA2152713500719E85 /* NibPhotoCell.swift */; };
@@ -53,6 +54,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		379699D721C8A218004FD35C /* NaN.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NaN.swift; sourceTree = "<group>"; };
 		5B45E00F9AAE44F8E3A7AEF4 /* Pods_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		676804CB7815F8ECCFF0F909 /* Pods-Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Example.release.xcconfig"; path = "Target Support Files/Pods-Example/Pods-Example.release.xcconfig"; sourceTree = "<group>"; };
 		E4B08BC10EB6B61546CD52A0 /* Pods-Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Example.debug.xcconfig"; path = "Target Support Files/Pods-Example/Pods-Example.debug.xcconfig"; sourceTree = "<group>"; };
@@ -145,6 +147,7 @@
 				F9CD7089214CA3A900A78BCA /* SlidingPhotoViewCell.swift */,
 				F9CD708B214CA41C00A78BCA /* SlidingPhotoProtocols.swift */,
 				F9F7344D214FF4900024569D /* UIView+SlidingPhoto.swift */,
+				379699D721C8A218004FD35C /* NaN.swift */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -324,6 +327,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				379699D821C8A218004FD35C /* NaN.swift in Sources */,
 				F9CD708E214CA89000A78BCA /* SlidingPhotoViewController.swift in Sources */,
 				F9CD7088214CA3A300A78BCA /* SlidingPhotoView.swift in Sources */,
 				F9CD708A214CA3A900A78BCA /* SlidingPhotoViewCell.swift in Sources */,

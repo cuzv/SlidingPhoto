@@ -32,6 +32,6 @@ final class CustomPhotoViewCell: SlidingPhotoViewCell {
         if nil == progressLayer.superlayer {
             layer.addSublayer(progressLayer)
         }
-        progressLayer.position = CGPoint(x: bounds.width / 2.0, y: bounds.height / 2.0)
+        progressLayer.position = CGPoint(x: bounds.width.nanToZero() / 2.0, y: bounds.height.nanToZero() / 2.0)
     }
 }

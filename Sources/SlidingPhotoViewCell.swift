@@ -88,7 +88,7 @@ open class SlidingPhotoViewCell: UIView {
         CATransaction.setDisableActions(true)
         
         scrollView.zoomScale = 1
-        scrollView.frame = bounds
+        scrollView.frame = bounds.nanToZero()
         
         let height: CGFloat
         if let image = displayView.image {
@@ -96,7 +96,7 @@ open class SlidingPhotoViewCell: UIView {
         } else {
             height = bounds.height
         }
-        let size = CGSize(width: bounds.width, height: height)
+        let size = CGSize(width: bounds.width, height: height).nanToZero()
         displayView.frame = CGRect(origin: .zero, size: size)
         scrollView.contentSize = size
         
@@ -124,7 +124,7 @@ open class SlidingPhotoViewCell: UIView {
             let width = bounds.width / scale
             let height = bounds.height / scale
             let touchPoint = sender.location(in: displayView)
-            let rect = CGRect(x: touchPoint.x - width * 0.5, y: touchPoint.y - height * 0.5, width: width, height: height)
+            let rect = CGRect(x: touchPoint.x - width * 0.5, y: touchPoint.y - height * 0.5, width: width, height: height).nanToZero()
             scrollView.zoom(to: rect, animated: true)
         }
     }

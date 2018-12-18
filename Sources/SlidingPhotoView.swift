@@ -160,7 +160,7 @@ extension SlidingPhotoView: UIScrollViewDelegate {
         guard numberOfItems > 0 else { return }
         
         // Load preview & next page
-        let page = Int(scrollView.contentOffset.x / scrollView.bounds.width + 0.5)
+        let page = Int((scrollView.contentOffset.x / scrollView.bounds.width.nanToZero()) + 0.5)
         let range = max(page - 1, 0) ... min(page + 1, numberOfItems - 1)
         
         // Mark cell as reusable if needed

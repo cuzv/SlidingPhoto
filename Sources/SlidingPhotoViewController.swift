@@ -85,8 +85,8 @@ extension SlidingPhotoViewController {
         case .began:
             otherViews.forEach({ $0.sp.alpha = $0.alpha })
         case .changed:
-            let translation = sender.translation(in: sender.view).y
-            let ratio = abs(translation / view.bounds.size.height)
+            let translation = sender.translation(in: sender.view).y.nanToZero()
+            let ratio = abs(translation / view.bounds.size.height).nanToZero()
             slidingPhotoView.transform = CGAffineTransform(translationX: 0, y: translation)
             otherViews.forEach({ let alpha = $0.sp.alpha - ratio; $0.alpha = alpha < 0 ? 0 : alpha })
         case .ended:
@@ -97,8 +97,8 @@ extension SlidingPhotoViewController {
             if isMoveUp || isMoveDown {
                 willTriggerInteractiveDismiss()
                 
-                let height = slidingPhotoView.bounds.size.height
-                let duration = TimeInterval(0.25 * (height - abs(translation)) / height)
+                let height = slidingPhotoView.bounds.size.height.nanToZero()
+                let duration = (TimeInterval(0.25 * (height - abs(translation)) / height)).nanToZero()
                 let translationY = height * (isMoveUp ? -1.0 : 1.0)
                 UIView.animate(withDuration: duration, delay: 0, options: [.curveEaseOut, .beginFromCurrentState], animations: {
                     self.slidingPhotoView.transform = CGAffineTransform(translationX: 0, y: translationY)
@@ -176,14 +176,14 @@ private final class PresentationAnimator: NSObject, UIViewControllerAnimatedTran
             
             let view = UIView()
             
-            let fromRect = thumbnail.convert(thumbnail.bounds, to: toView)
+            let fromRect = thumbnail.convert(thumbnail.bounds, to: toView).nanToZero()
             if isContentsClippedToTop {
                 // Always display top content
                 view.layer.anchorPoint = CGPoint(x: 0.5, y: 0)
 
-                var destRect = displayView.convert(displayView.bounds, to: toView)
-                let scale = thumbnail.bounds.width / destRect.width
-                destRect.size.height = thumbnail.bounds.height / scale
+                var destRect = displayView.convert(displayView.bounds, to: toView).nanToZero()
+                let scale = (thumbnail.bounds.width / destRect.width).nanToZero()
+                destRect.size.height = (thumbnail.bounds.height / scale).nanToZero()
                 // y = minY, cuz anchorPoint = (0.5, 0)
                 destRect.origin = CGPoint(x: fromRect.midX - destRect.width / 2.0, y: fromRect.minY)
                 view.frame = destRect
@@ -283,9 +283,9 @@ private final class DismissionAnimator: NSObject, UIViewControllerAnimatedTransi
             otherViews.forEach({ $0.alpha = 0 })
 
             if let thumbnail = thumbnail {
-                let destRect = thumbnail.convert(thumbnail.bounds, to: fromView)
+                let destRect = thumbnail.convert(thumbnail.bounds, to: fromView).nanToZero()
                 if isContentsClippedToTop {
-                    var rect = displayView.convert(displayView.bounds, to: fromView)
+                    var rect = displayView.convert(displayView.bounds, to: fromView).nanToZero()
                     var height = thumbnail.bounds.height / thumbnail.bounds.width * displayView.bounds.width
                     if height.isNaN {
                         height = displayView.bounds.width
@@ -295,7 +295,7 @@ private final class DismissionAnimator: NSObject, UIViewControllerAnimatedTransi
                     rect.origin = CGPoint(x: destRect.midX - rect.width / 2.0, y: destRect.minY)
                     transitionView?.frame = rect
 
-                    let scale = thumbnail.bounds.width / displayView.bounds.width
+                    let scale = thumbnail.bounds.width / displayView.bounds.width.nanToZero()
                     transitionView?.transform = CGAffineTransform(scaleX: scale, y: scale)
                 } else {
                     transitionView?.frame = destRect

@@ -99,7 +99,7 @@ class SlideViewController: SlidingPhotoViewController {
         let url = UserDefaults.standard.loadOnlineImages ? remoteUrls[cell.index] : localUrls[cell.index]
         if let imageView = cell.displayView as? UIImageView {
             imageView.kf.setImage(with: url, placeholder: imageView.image, options: [.backgroundDecode, .transition(.none)], progressBlock: { [weak cell] (current, total) in
-                let progress = CGFloat(current) / CGFloat(total)
+                let progress = (CGFloat(current) / CGFloat(total)).nanToZero()
                 let displayProgress = progress - 0.1 > 0 ? progress - 0.1 : progress
                 cell?.progressLayer.strokeEnd = displayProgress
                 cell?.progressLayer.isHidden = false
