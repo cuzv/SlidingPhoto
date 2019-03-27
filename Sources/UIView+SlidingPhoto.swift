@@ -20,7 +20,7 @@ public protocol SlidingPhotoCompatible {
     var sp: CompatibleType { get }
 }
 
-public extension SlidingPhotoCompatible {
+extension SlidingPhotoCompatible {
     public var sp: SlidingPhoto<Self> {
         return SlidingPhoto(self)
     }
@@ -28,7 +28,7 @@ public extension SlidingPhotoCompatible {
 
 // MARK: - 
 
-public extension SlidingPhoto where Base: UIView {
+extension SlidingPhoto where Base: UIView {
     public var image: UIImage? {
         get {
             let contents = base.layer.contents
@@ -75,7 +75,7 @@ public extension SlidingPhoto where Base: UIView {
     }
 }
 
-public extension SlidingPhoto where Base: UIImageView {
+extension SlidingPhoto where Base: UIImageView {
     public var image: UIImage? {
         get {
             return base.image

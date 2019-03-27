@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "SlidingPhoto"
-  s.version      = "1.1.0"
+  s.version      = "1.2.0"
   s.summary      = "SlidingPhoto is a light weight photo browser, like the wechat, weibo image viewer."
 
   s.homepage     = "https://github.com/cuzv/SlidingPhoto.git"
