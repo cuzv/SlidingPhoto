@@ -62,9 +62,9 @@ open class SlidingPhotoViewController: UIViewController {
         slidingPhotoView.dataSource = self
         slidingPhotoView.panGestureRecognizer.addTarget(self, action: #selector(onPan(sender:)))
     }
-    
-    open func willTriggerInteractiveDismiss() {
-    }
+
+    open func willDismissByPanGesture() {}
+    open func didDismissByPanGesture() {}
 }
 
 extension SlidingPhotoViewController: SlidingPhotoViewDataSource, SlidingPhotoViewDelegate {
@@ -95,7 +95,7 @@ extension SlidingPhotoViewController {
             let isMoveUp = velocity < -1000 && translation < 0
             let isMoveDown = velocity > 1000 && translation > 0
             if isMoveUp || isMoveDown {
-                willTriggerInteractiveDismiss()
+                willDismissByPanGesture()
                 
                 let height = slidingPhotoView.bounds.size.height.nanToZero()
                 let duration = (TimeInterval(0.25 * (height - abs(translation)) / height)).nanToZero()
@@ -105,8 +105,10 @@ extension SlidingPhotoViewController {
                     self.otherViews.forEach({ $0.alpha = 0 })
                 }, completion: { _ in
                     self.presentingViewController?.beginAppearanceTransition(true, animated: false)
-                    self.presentingViewController?.dismiss(animated: false, completion: nil)
-                    self.presentingViewController?.endAppearanceTransition()
+                    self.presentingViewController?.dismiss(animated: false) {
+                        self.presentingViewController?.endAppearanceTransition()
+                        self.didDismissByPanGesture()
+                    }
                 })
             } else {
                 UIView.animate(withDuration: 0.25, delay: 0, options: [.curveEaseOut, .beginFromCurrentState, .allowUserInteraction], animations: {
