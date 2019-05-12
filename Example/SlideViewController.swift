@@ -86,8 +86,8 @@ class SlideViewController: SlidingPhotoViewController {
         }
     }
     
-    override func willTriggerInteractiveDismiss() {
-        print("willTriggerInteractiveDismiss")
+    override func willDismissByPanGesture() {
+        print("willDismissByPanGesture")
     }
     
     override func numberOfItems(in slidingPhotoView: SlidingPhotoView) -> Int {

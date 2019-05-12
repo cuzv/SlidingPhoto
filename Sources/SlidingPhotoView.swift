@@ -129,11 +129,11 @@ open class SlidingPhotoView: UIView {
         guard itemWidth > 0 && itemHeight > 0 else { return }
         let numberOfItems = dataSource.numberOfItems(in: self)
         
+        let oldPage = currentPage
         scrollView.alwaysBounceHorizontal = numberOfItems > 0
         scrollView.contentSize = CGSize(width: CGFloat(numberOfItems) * itemWidth, height: itemHeight)
-        scrollView.scrollRectToVisible(CGRect(x: itemWidth * CGFloat(currentPage), y: 0, width: itemWidth, height: itemHeight), animated: false)
-        scrollViewDidScroll(scrollView)
-        
+        scrollToItem(at: oldPage, animated: false)
+
         // Force call `didUpdateFocus`
         currentPage = -1
     }
