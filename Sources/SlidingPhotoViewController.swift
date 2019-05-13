@@ -104,9 +104,10 @@ extension SlidingPhotoViewController {
                     self.slidingPhotoView.transform = CGAffineTransform(translationX: 0, y: translationY)
                     self.otherViews.forEach({ $0.alpha = 0 })
                 }, completion: { _ in
-                    self.presentingViewController?.beginAppearanceTransition(true, animated: false)
-                    self.presentingViewController?.dismiss(animated: false) {
-                        self.presentingViewController?.endAppearanceTransition()
+                    let vc = self.presentingViewController
+                    vc?.beginAppearanceTransition(true, animated: false)
+                    vc?.dismiss(animated: false) {
+                        vc?.endAppearanceTransition()
                         self.didDismissByPanGesture()
                     }
                 })
