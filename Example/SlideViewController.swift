@@ -48,6 +48,7 @@ class SlideViewController: SlidingPhotoViewController {
         slidingPhotoView.register(CustomPhotoViewCell.self)
 //        slidingPhotoView.register(NibPhotoCell.nib)
         slidingPhotoView.scrollToItem(at: fromPage, animated: false)
+//        slidingPhotoView.panGestureRecognizer.isEnabled = false
         
         pager.numberOfPages = localUrls.count
         pager.currentPage = fromPage

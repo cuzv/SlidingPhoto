@@ -16,24 +16,29 @@ open class SlidingPhotoView: UIView {
         }
     }
     
-    private var page: Int = -1
-    open private(set) var currentPage: Int {
+    private var index: Int = -1
+    open private(set) var currentIndex: Int {
         get {
-            return page < 0 ? 0 : page
+            return index < 0 ? 0 : index
         }
         set {
-            if newValue != page {
+            if newValue != index {
                 if newValue >= 0 {
-                    page = newValue
+                    index = newValue
                 }
-                delegate?.slidingPhotoView?(self, didUpdateFocus: acquireCell(for: page))
+                delegate?.slidingPhotoView?(self, didUpdateFocus: acquireCell(for: index))
             }
         }
     }
     
+    @available(*, deprecated, renamed: "currentIndex")
+    open var currentPage: Int {
+        return currentIndex
+    }
+    
     open func scrollToItem(at index: Int, animated: Bool) {
         scrollView.setContentOffset(CGPoint(x: scrollView.bounds.width * CGFloat(index), y: 0), animated: animated)
-        currentPage = index
+        currentIndex = index
     }
     
     @IBOutlet open weak var dataSource: SlidingPhotoViewDataSource? {
@@ -79,8 +84,9 @@ open class SlidingPhotoView: UIView {
     }
     
     open override func layoutSubviews() {
+        let index = currentIndex
         super.layoutSubviews()
-        reloadData()
+        reloadData(toIndex: index)
     }
     
     private final class DismissPanGestureRecognizer: UIPanGestureRecognizer {
@@ -120,6 +126,10 @@ open class SlidingPhotoView: UIView {
     }
     
     open func reloadData() {
+        reloadData(toIndex: currentIndex)
+    }
+    
+    private func reloadData(toIndex index: Int) {
         guard let dataSource = dataSource else { return }
         
         reusableCells.forEach({ purge($0) })
@@ -129,13 +139,12 @@ open class SlidingPhotoView: UIView {
         guard itemWidth > 0 && itemHeight > 0 else { return }
         let numberOfItems = dataSource.numberOfItems(in: self)
         
-        let oldPage = currentPage
         scrollView.alwaysBounceHorizontal = numberOfItems > 0
         scrollView.contentSize = CGSize(width: CGFloat(numberOfItems) * itemWidth, height: itemHeight)
-        scrollToItem(at: oldPage, animated: false)
-
+        scrollToItem(at: index, animated: false)
+        
         // Force call `didUpdateFocus`
-        currentPage = -1
+        currentIndex = -1
     }
     
     private var reusableCells: [SlidingPhotoViewCell] = []
@@ -175,7 +184,7 @@ extension SlidingPhotoView: UIScrollViewDelegate {
         }
         
         if (0 ..< numberOfItems).contains(page) {
-            currentPage = page
+            currentIndex = page
         }
     }
     
@@ -234,18 +243,18 @@ extension SlidingPhotoView: UIScrollViewDelegate {
 
 private extension SlidingPhotoView {
     @objc private func onSingleTap(sender: UITapGestureRecognizer) {
-        guard sender.state == .ended, let cell = loadedCell(of: currentPage), let delegate = delegate else { return }
+        guard sender.state == .ended, let cell = loadedCell(of: currentIndex), let delegate = delegate else { return }
         let touchPoint = sender.location(in: cell)
         delegate.slidingPhotoView?(self, didSingleTapped: cell, at: touchPoint)
     }
     
     @objc private func onDoubleTap(sender: UITapGestureRecognizer) {
-        guard sender.state == .ended, let cell = loadedCell(of: currentPage) else { return }
+        guard sender.state == .ended, let cell = loadedCell(of: currentIndex) else { return }
         cell.onDoubleTap(sender: sender)
     }
     
     @objc private func onLongPress(sender: UILongPressGestureRecognizer) {
-        guard sender.state == .ended, let cell = loadedCell(of: currentPage), let delegate = delegate else { return }
+        guard sender.state == .ended, let cell = loadedCell(of: currentIndex), let delegate = delegate else { return }
         let touchPoint = sender.location(in: cell)
         delegate.slidingPhotoView?(self, didLongPressed: cell, at: touchPoint)
     }
@@ -255,7 +264,7 @@ extension SlidingPhotoView: UIGestureRecognizerDelegate {
     override open func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
         if gestureRecognizer == panGestureRecognizer {
             let velocity = panGestureRecognizer.velocity(in: panGestureRecognizer.view)
-            if abs(velocity.y) > abs(velocity.x), let cell = loadedCell(of: currentPage), cell.scrollView.zoomScale == 1.0, !cell.scrollView.isDragging, !cell.scrollView.isDecelerating {
+            if abs(velocity.y) > abs(velocity.x), let cell = loadedCell(of: currentIndex), cell.scrollView.zoomScale == 1.0, !cell.scrollView.isDragging, !cell.scrollView.isDecelerating {
                 let contentHeight = cell.scrollView.contentSize.height
                 let boundsHeight = cell.scrollView.bounds.size.height
                 let offsetY = cell.scrollView.contentOffset.y

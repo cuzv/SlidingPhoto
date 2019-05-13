@@ -161,7 +161,7 @@ private final class PresentationAnimator: NSObject, UIViewControllerAnimatedTran
         
         let otherViews = vc.otherViews
         let slidingPhotoView = vc.slidingPhotoView
-        let currentPage = slidingPhotoView.currentPage
+        let currentPage = slidingPhotoView.currentIndex
         let cell = slidingPhotoView.acquireCell(for: currentPage)
         let displayView = cell.displayView
         
@@ -258,7 +258,7 @@ private final class DismissionAnimator: NSObject, UIViewControllerAnimatedTransi
         
         let otherViews = vc.otherViews
         let slidingPhotoView = vc.slidingPhotoView
-        let currentPage = slidingPhotoView.currentPage
+        let currentPage = slidingPhotoView.currentIndex
         let cell = slidingPhotoView.acquireCell(for: currentPage)
         let displayView = cell.displayView
         
