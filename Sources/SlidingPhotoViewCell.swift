@@ -12,7 +12,17 @@ open class SlidingPhotoViewCell: UIView {
     public static var displayViewClass: SlidingPhotoDisplayView.Type = UIImageView.self
     
     open internal(set) var index: Int = -1
-    internal var prepared: Bool = false
+    internal var prepared: Bool = false {
+        didSet {
+            if prepared {
+                alpha = 1
+                superview?.bringSubviewToFront(self)
+            } else {
+                alpha = 0
+                superview?.sendSubviewToBack(self)
+            }
+        }
+    }
     
     let scrollView: UIScrollView = {
         let view = UIScrollView(frame: .zero)
