@@ -92,7 +92,7 @@ open class SlidingPhotoView: UIView {
             }
         }
     }
-    private(set) var panGestureRecognizer: UIPanGestureRecognizer = DismissPanGestureRecognizer()
+    public private(set) var panGestureRecognizer: UIPanGestureRecognizer = DismissPanGestureRecognizer()
     
     private func setup() {
         scrollView.delegate = self
