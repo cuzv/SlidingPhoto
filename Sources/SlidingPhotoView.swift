@@ -131,18 +131,19 @@ open class SlidingPhotoView: UIView {
     
     private func reloadData(toIndex index: Int) {
         guard let dataSource = dataSource else { return }
-        
+
         reusableCells.forEach({ purge($0) })
-        
+
         let itemWidth = scrollView.bounds.width
         let itemHeight = scrollView.bounds.height
         guard itemWidth > 0 && itemHeight > 0 else { return }
         let numberOfItems = dataSource.numberOfItems(in: self)
-        
+
         scrollView.alwaysBounceHorizontal = numberOfItems > 0
         scrollView.contentSize = CGSize(width: CGFloat(numberOfItems) * itemWidth, height: itemHeight)
-        scrollToItem(at: index, animated: false)
-        
+        scrollView.scrollRectToVisible(CGRect(x: itemWidth * CGFloat(index), y: 0, width: itemWidth, height: itemHeight), animated: false)
+        scrollViewDidScroll(scrollView)
+
         // Force call `didUpdateFocus`
         currentIndex = -1
     }
