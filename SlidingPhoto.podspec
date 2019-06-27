@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "SlidingPhoto"
-  s.version      = "1.3.1"
+  s.version      = "1.3.2"
   s.summary      = "SlidingPhoto is a light weight photo browser, like the wechat, weibo image viewer."
 
   s.homepage     = "https://github.com/cuzv/SlidingPhoto.git"
@@ -12,4 +12,5 @@ Pod::Spec.new do |s|
 :tag => s.version.to_s }
   s.source_files = "Sources/*.{h,swift}"
   s.frameworks   = 'Foundation', 'UIKit'
+  s.swift_versions = '5'
 end

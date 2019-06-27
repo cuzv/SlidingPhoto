@@ -56,7 +56,13 @@ open class SlidingPhotoViewCell: UIView {
     deinit {
         if let observer = observation {
             observation = nil
-            removeObserver(observer, forKeyPath: "displayView.image")
+            
+            if #available(iOS 13, *) {
+                // do nothings
+            } else {
+                removeObserver(observer, forKeyPath: "displayView.image")
+            }
+            
             observer.invalidate()
         }
     }
