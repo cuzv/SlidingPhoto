@@ -196,6 +196,7 @@ private final class PresentationAnimator: NSObject, UIViewControllerAnimatedTran
             }
 
             view.sp.image = thumbnail.image
+            view.clipsToBounds = true
             
             toView.insertSubview(view, belowSubview: vc.slidingPhotoView)
             transitionView = view
