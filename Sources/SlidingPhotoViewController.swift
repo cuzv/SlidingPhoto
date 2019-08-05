@@ -199,6 +199,7 @@ private final class PresentationAnimator: NSObject, UIViewControllerAnimatedTran
             
             toView.insertSubview(view, belowSubview: vc.slidingPhotoView)
             transitionView = view
+            thumbnail.alpha = 0
         } else {
             displayView.transform = CGAffineTransform(scaleX: 0.1, y: 0.1)
         }
@@ -226,6 +227,7 @@ private final class PresentationAnimator: NSObject, UIViewControllerAnimatedTran
                 slidingPhotoView.dataSource?.slidingPhotoView(slidingPhotoView, prepareForDisplay: cell)
             }
             displayView.alpha = 1
+            thumbnail?.alpha = 1
             transitionView?.removeFromSuperview()
             from.endAppearanceTransition()
             transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
