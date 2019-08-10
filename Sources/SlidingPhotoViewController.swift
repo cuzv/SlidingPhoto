@@ -170,6 +170,7 @@ private final class PresentationAnimator: NSObject, UIViewControllerAnimatedTran
 
         var transitionView: UIView?
         var useThumbnailData = false
+        var springAdditionRatio: CGFloat = 0
         if let thumbnail = thumbnail {
             // Ensure cell contents loaded
             if nil == displayView.image {
@@ -202,6 +203,8 @@ private final class PresentationAnimator: NSObject, UIViewControllerAnimatedTran
             toView.insertSubview(view, belowSubview: vc.slidingPhotoView)
             transitionView = view
             thumbnail.alpha = 0
+            
+            springAdditionRatio = abs(container.convert(thumbnail.center, from: thumbnail).y - container.center.y) / container.center.y
         } else {
             displayView.transform = CGAffineTransform(scaleX: 0.1, y: 0.1)
         }
@@ -209,7 +212,7 @@ private final class PresentationAnimator: NSObject, UIViewControllerAnimatedTran
         displayView.alpha = 0
         otherViews.forEach({ $0.alpha = 0 })
         from.beginAppearanceTransition(false, animated: true)
-        UIView.animate(withDuration: transitionDuration(using: transitionContext), delay: 0, usingSpringWithDamping: 0.9, initialSpringVelocity: 10, options: [.curveEaseOut, .beginFromCurrentState], animations: {
+        UIView.animate(withDuration: transitionDuration(using: transitionContext), delay: 0, usingSpringWithDamping: 0.85 + 0.1 * springAdditionRatio, initialSpringVelocity: 0, options: [], animations: {
             otherViews.forEach({ $0.alpha = 1 })
 
             if nil != thumbnail {
@@ -287,7 +290,7 @@ private final class DismissionAnimator: NSObject, UIViewControllerAnimatedTransi
         }
         
         to.beginAppearanceTransition(true, animated: true)
-        UIView.animate(withDuration: transitionDuration(using: transitionContext), delay: 0, usingSpringWithDamping: 0.9, initialSpringVelocity: 10, options: [.curveEaseOut, .beginFromCurrentState], animations: {
+        UIView.animate(withDuration: transitionDuration(using: transitionContext), delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 10, options: [], animations: {
             otherViews.forEach({ $0.alpha = 0 })
 
             if let thumbnail = thumbnail {
