@@ -194,9 +194,10 @@ private final class PresentationAnimator: NSObject, UIViewControllerAnimatedTran
             } else {
                 view.frame = fromRect
             }
-
-            view.sp.image = thumbnail.image
-            view.clipsToBounds = true
+            
+            view.layer.masksToBounds = true
+            view.layer.contentsRect = thumbnail.layer.contentsRect
+            view.layer.contents = thumbnail.image?.cgImage
             
             toView.insertSubview(view, belowSubview: vc.slidingPhotoView)
             transitionView = view
@@ -271,16 +272,17 @@ private final class DismissionAnimator: NSObject, UIViewControllerAnimatedTransi
         var transitionView: UIView?
         if nil != thumbnail {
             let view = UIView()
-            view.clipsToBounds = true
             if isContentsClippedToTop {
                 view.layer.anchorPoint = CGPoint(x: 0.5, y: 0)
                 cell.scrollView.contentOffset = .zero
             }
             view.frame = displayView.convert(displayView.bounds, to: fromView)
-            view.sp.image = displayView.image
+            view.layer.masksToBounds = true
+            view.layer.contentsRect = displayView.layer.contentsRect
+            view.layer.contents = displayView.image?.cgImage
+
             fromView.insertSubview(view, belowSubview: vc.slidingPhotoView)
             transitionView = view
-            
             displayView.alpha = 0
         }
         
