@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import CoreGraphics
 
 public extension Double {
     func nanToZero() -> Double {

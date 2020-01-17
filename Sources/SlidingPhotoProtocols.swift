@@ -27,7 +27,7 @@ extension UIImageView: SlidingPhotoDisplayable {
 @objc public protocol SlidingPhotoViewDelegate: NSObjectProtocol {
     @objc optional func slidingPhotoView(_ slidingPhotoView: SlidingPhotoView, didUpdateFocus cell: SlidingPhotoViewCell)
     @objc optional func slidingPhotoView(_ slidingPhotoView: SlidingPhotoView, didEndDisplaying cell: SlidingPhotoViewCell)
-    
+
     @objc optional func slidingPhotoView(_ slidingPhotoView: SlidingPhotoView, didSingleTapped cell: SlidingPhotoViewCell, at location: CGPoint)
     @objc optional func slidingPhotoView(_ slidingPhotoView: SlidingPhotoView, didLongPressed cell: SlidingPhotoViewCell, at location: CGPoint)
 }

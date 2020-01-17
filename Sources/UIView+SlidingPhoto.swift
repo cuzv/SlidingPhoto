@@ -44,10 +44,10 @@ extension SlidingPhoto where Base: UIView {
             }
         }
     }
-    
+
     func setImage(_ image: UIImage?, work: (_ image: UIImage?) -> Void) {
         work(image)
-        
+
         if let image = image {
             let iw = image.size.width
             let ih = image.size.height
@@ -68,7 +68,7 @@ extension SlidingPhoto where Base: UIView {
             }
         }
     }
-    
+
     public var isContentsClippedToTop: Bool {
         let contentsRect = base.layer.contentsRect
         return contentsRect.minY == 0 && contentsRect.height < 1

@@ -13,7 +13,7 @@ open class SlidingPhotoViewController: UIViewController {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         setup()
     }
-    
+
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         setup()
@@ -23,29 +23,29 @@ open class SlidingPhotoViewController: UIViewController {
         modalPresentationStyle = .custom
         transitioningDelegate = self
     }
-    
+
     open var dimmingView: UIView = {
         let view = UIView()
         view.backgroundColor = .black
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
-    
+
     public let slidingPhotoView: SlidingPhotoView = {
         let view = SlidingPhotoView()
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
-    
+
     var otherViews: [UIView] {
         return view.subviews.filter({ $0 != slidingPhotoView })
     }
 
     override open func viewDidLoad() {
         super.viewDidLoad()
-        
+
         view.backgroundColor = .clear
-        
+
         view.addSubview(dimmingView)
         dimmingView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         dimmingView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
@@ -57,7 +57,7 @@ open class SlidingPhotoViewController: UIViewController {
         slidingPhotoView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         slidingPhotoView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
         slidingPhotoView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-        
+
         slidingPhotoView.delegate = self
         slidingPhotoView.dataSource = self
         slidingPhotoView.panGestureRecognizer.addTarget(self, action: #selector(onPan(sender:)))
@@ -71,7 +71,7 @@ extension SlidingPhotoViewController: SlidingPhotoViewDataSource, SlidingPhotoVi
     open func numberOfItems(in slidingPhotoView: SlidingPhotoView) -> Int { return 0 }
     open func slidingPhotoView(_ slidingPhotoView: SlidingPhotoView, prepareForDisplay cell: SlidingPhotoViewCell) {}
     open func slidingPhotoView(_ slidingPhotoView: SlidingPhotoView, thumbnailForTransition cell: SlidingPhotoViewCell) -> SlidingPhotoDisplayView? { return nil }
-    
+
     open func slidingPhotoView(_ slidingPhotoView: SlidingPhotoView, didUpdateFocus cell: SlidingPhotoViewCell) {}
     open func slidingPhotoView(_ slidingPhotoView: SlidingPhotoView, didEndDisplaying cell: SlidingPhotoViewCell) {}
 
@@ -96,7 +96,7 @@ extension SlidingPhotoViewController {
             let isMoveDown = velocity > 1000 && translation > 0
             if isMoveUp || isMoveDown {
                 willDismissByPanGesture()
-                
+
                 let height = slidingPhotoView.bounds.size.height.nanToZero()
                 let duration = (TimeInterval(0.25 * (height - abs(translation)) / height)).nanToZero()
                 let translationY = height * (isMoveUp ? -1.0 : 1.0)
@@ -128,7 +128,7 @@ extension SlidingPhotoViewController: UIViewControllerTransitioningDelegate {
     public func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         return PresentationAnimator(vc: self)
     }
-    
+
     public func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         return DismissionAnimator(vc: self)
     }
@@ -140,11 +140,11 @@ private final class PresentationAnimator: NSObject, UIViewControllerAnimatedTran
         self.vc = vc
         super.init()
     }
-    
+
     public func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
         return 0.25
     }
-    
+
     public func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
         guard
             let from = transitionContext.viewController(forKey: .from),
@@ -153,18 +153,18 @@ private final class PresentationAnimator: NSObject, UIViewControllerAnimatedTran
         else {
             return transitionContext.completeTransition(false)
         }
-        
+
         let container = transitionContext.containerView
         toView.frame = container.bounds
         container.addSubview(toView)
         toView.layoutIfNeeded()
-        
+
         let otherViews = vc.otherViews
         let slidingPhotoView = vc.slidingPhotoView
         let currentPage = slidingPhotoView.currentIndex
         let cell = slidingPhotoView.acquireCell(for: currentPage)
         let displayView = cell.displayView
-        
+
         let thumbnail = slidingPhotoView.dataSource?.slidingPhotoView?(slidingPhotoView, thumbnailForTransition: cell)
         let isContentsClippedToTop = (thumbnail as UIView?)?.sp.isContentsClippedToTop == true
 
@@ -177,9 +177,9 @@ private final class PresentationAnimator: NSObject, UIViewControllerAnimatedTran
                 displayView.image = thumbnail.image
                 useThumbnailData = true
             }
-            
+
             let view = UIView()
-            
+
             let fromRect = thumbnail.convert(thumbnail.bounds, to: toView).nanToZero()
             if isContentsClippedToTop {
                 // Always display top content
@@ -195,15 +195,15 @@ private final class PresentationAnimator: NSObject, UIViewControllerAnimatedTran
             } else {
                 view.frame = fromRect
             }
-            
+
             view.layer.masksToBounds = true
             view.layer.contentsRect = thumbnail.layer.contentsRect
             view.layer.contents = thumbnail.image?.cgImage
-            
+
             toView.insertSubview(view, belowSubview: vc.slidingPhotoView)
             transitionView = view
             thumbnail.alpha = 0
-            
+
             springAdditionRatio = abs(container.convert(thumbnail.center, from: thumbnail).y - container.center.y) / container.center.y
         } else {
             displayView.transform = CGAffineTransform(scaleX: 0.1, y: 0.1)
@@ -246,7 +246,7 @@ private final class DismissionAnimator: NSObject, UIViewControllerAnimatedTransi
         self.vc = vc
         super.init()
     }
-    
+
     public func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
         return 0.25
     }
@@ -262,16 +262,16 @@ private final class DismissionAnimator: NSObject, UIViewControllerAnimatedTransi
 
         let container = transitionContext.containerView
         container.addSubview(fromView)
-        
+
         let otherViews = vc.otherViews
         let slidingPhotoView = vc.slidingPhotoView
         let currentPage = slidingPhotoView.currentIndex
         let cell = slidingPhotoView.acquireCell(for: currentPage)
         let displayView = cell.displayView
-        
+
         let thumbnail = slidingPhotoView.dataSource?.slidingPhotoView?(slidingPhotoView, thumbnailForTransition: cell)
         let isContentsClippedToTop = (thumbnail as UIView?)?.sp.isContentsClippedToTop == true
-        
+
         var transitionView: UIView?
         if nil != thumbnail {
             let view = UIView()
@@ -288,7 +288,7 @@ private final class DismissionAnimator: NSObject, UIViewControllerAnimatedTransi
             transitionView = view
             displayView.alpha = 0
         }
-        
+
         to.beginAppearanceTransition(true, animated: true)
         UIView.animate(withDuration: transitionDuration(using: transitionContext), delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 10, options: [], animations: {
             otherViews.forEach({ $0.alpha = 0 })
