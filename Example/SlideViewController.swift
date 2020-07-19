@@ -28,6 +28,7 @@ class SlideViewController: SlidingPhotoViewController {
         self.vc = vc
         self.fromPage = fromPage
         super.init(nibName: nil, bundle: nil)
+        modalPresentationCapturesStatusBarAppearance = true
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -39,9 +40,17 @@ class SlideViewController: SlidingPhotoViewController {
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
+    
+    override var prefersStatusBarHidden: Bool {
+        true
+    }
+    
+    override var preferredStatusBarUpdateAnimation: UIStatusBarAnimation {
+        .slide
+    }
 
     override func viewDidLoad() {
-        SlidingPhotoViewCell.displayViewClass = AnimatedImageView.self
+        SlidingPhotoViewCell.displayViewClass = ExampleAnimatedImageView.self
 
         super.viewDidLoad()
         
@@ -58,32 +67,6 @@ class SlideViewController: SlidingPhotoViewController {
             pager.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
         } else {
             pager.bottomAnchor.constraint(equalTo: bottomLayoutGuide.topAnchor).isActive = true
-        }
-    }
-    
-    private lazy var statusBarWindow: UIView = UIApplication.shared.value(forKey: "statusBarWindow") as! UIView
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        if UIScreen.main.isNotchExist {
-            return
-        }
-        
-        UIView.animate(withDuration: 0.25) {
-            self.statusBarWindow.transform = CGAffineTransform(translationX: 0, y: -UIApplication.shared.statusBarFrame.height)
-        }
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        
-        if UIScreen.main.isNotchExist {
-            return
-        }
-        
-        UIView.animate(withDuration: 0.25) {
-            self.statusBarWindow.transform = .identity
         }
     }
     
@@ -151,15 +134,9 @@ class SlideViewController: SlidingPhotoViewController {
     }
 }
 
-extension UIScreen {
-    public var isNotchExist: Bool {
-        switch UIScreen.main.nativeBounds.size {
-        case CGSize(width: 1125, height: 2436),
-             CGSize(width: 1242, height: 2688),
-             CGSize(width: 828, height: 1792):
-            return true
-        default:
-            return false
-        }
+final class ExampleAnimatedImageView: AnimatedImageView {
+    override var isHighlighted: Bool {
+        get { super.isHighlighted }
+        set {}
     }
 }
