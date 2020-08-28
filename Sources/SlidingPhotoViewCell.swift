@@ -56,13 +56,9 @@ open class SlidingPhotoViewCell: UIView {
     deinit {
         if let observer = observation {
             observation = nil
-
-            if #available(iOS 13, *) {
-                // do nothings
-            } else {
+            if #available(iOS 13, *) {} else {
                 removeObserver(observer, forKeyPath: "displayView.image")
             }
-
             observer.invalidate()
         }
     }
@@ -92,7 +88,7 @@ open class SlidingPhotoViewCell: UIView {
         displayView.frame = bounds
         scrollView.addSubview(displayView)
 
-        observation = observe(\.displayView.image, options: [.new]) { (_, change) in
+        observation = observe(\.displayView.image, options: [.new]) { (self, change) in
             if nil != change.newValue {
                 self.layoutContents()
             }

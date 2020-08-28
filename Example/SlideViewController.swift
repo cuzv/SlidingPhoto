@@ -46,7 +46,7 @@ class SlideViewController: SlidingPhotoViewController {
     }
     
     override var preferredStatusBarUpdateAnimation: UIStatusBarAnimation {
-        .slide
+        .fade
     }
 
     override func viewDidLoad() {
