@@ -35,10 +35,27 @@ open class SlidingPhotoView: UIView {
     open var currentPage: Int {
         return currentIndex
     }
+    
+    private func resolvedIndex(of index: Int) -> Int {
+        let isRightToLeft: Bool
+        if #available(iOS 10.0, *) {
+            isRightToLeft = effectiveUserInterfaceLayoutDirection == .rightToLeft
+        } else {
+            isRightToLeft = UIApplication.shared.userInterfaceLayoutDirection == .rightToLeft
+        }
+        
+        if isRightToLeft {
+            guard let dataSource = dataSource else { return index }
+            let numberOfItems = dataSource.numberOfItems(in: self)
+            return isRightToLeft ? numberOfItems - 1 - index : index
+        } else {
+            return index
+        }
+    }
 
     open func scrollToItem(at index: Int, animated: Bool) {
-        scrollView.setContentOffset(CGPoint(x: scrollView.bounds.width * CGFloat(index), y: 0), animated: animated)
         currentIndex = index
+        scrollView.setContentOffset(CGPoint(x: scrollView.bounds.width * CGFloat(resolvedIndex(of: index)), y: 0), animated: animated)
     }
 
     @IBOutlet open weak var dataSource: SlidingPhotoViewDataSource? {
@@ -67,6 +84,7 @@ open class SlidingPhotoView: UIView {
         }
         view.delaysContentTouches = false
         view.canCancelContentTouches = true
+        view.isDirectionalLockEnabled = true
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -141,7 +159,7 @@ open class SlidingPhotoView: UIView {
 
         scrollView.alwaysBounceHorizontal = numberOfItems > 0
         scrollView.contentSize = CGSize(width: CGFloat(numberOfItems) * itemWidth, height: itemHeight)
-        scrollView.scrollRectToVisible(CGRect(x: itemWidth * CGFloat(index), y: 0, width: itemWidth, height: itemHeight), animated: false)
+        scrollView.scrollRectToVisible(CGRect(x: itemWidth * CGFloat(resolvedIndex(of: index)), y: 0, width: itemWidth, height: itemHeight), animated: false)
         scrollViewDidScroll(scrollView)
 
         // Force call `didUpdateFocus`
@@ -170,7 +188,7 @@ extension SlidingPhotoView: UIScrollViewDelegate {
         guard numberOfItems > 0 else { return }
 
         // Load preview & next page
-        let page = Int((scrollView.contentOffset.x / scrollView.bounds.width.nanToZero()) + 0.5)
+        let page = resolvedIndex(of: Int((scrollView.contentOffset.x / scrollView.bounds.width.nanToZero()) + 0.5))
         let range = max(page - 1, 0) ... min(page + 1, numberOfItems - 1)
 
         // Mark cell as reusable if needed
@@ -227,7 +245,8 @@ extension SlidingPhotoView: UIScrollViewDelegate {
         }
 
         var rect = bounds
-        rect.origin.x = rect.size.width * CGFloat(index) + pageSpacing * (CGFloat(index) + 0.5)
+        let idx = resolvedIndex(of: index)
+        rect.origin.x = rect.size.width * CGFloat(idx) + pageSpacing * (CGFloat(idx) + 0.5)
         one.frame = rect
         one.index = index
         if nil == one.superview {
