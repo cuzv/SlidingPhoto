@@ -51,16 +51,8 @@ open class SlidingPhotoViewCell: UIView {
         return view
     }()
 
-    private var observation: NSKeyValueObservation?
-
     deinit {
-        if let observer = observation {
-            observation = nil
-            if #available(iOS 13, *) {} else {
-                removeObserver(observer, forKeyPath: "displayView.image")
-            }
-            observer.invalidate()
-        }
+        unregisterObserver()
     }
 
     public override init(frame: CGRect) {
@@ -88,11 +80,7 @@ open class SlidingPhotoViewCell: UIView {
         displayView.frame = bounds
         scrollView.addSubview(displayView)
 
-        observation = observe(\.displayView.image, options: [.new]) { (self, change) in
-            if nil != change.newValue {
-                self.layoutContents()
-            }
-        }
+        registerObserver()
     }
 
     private func layoutContents() {
@@ -147,6 +135,22 @@ open class SlidingPhotoViewCell: UIView {
         }
         set {
             scrollView.setZoomScale(1, animated: true)
+        }
+    }
+
+    private func registerObserver() {
+        displayView.addObserver(self, forKeyPath: "image", options: .new, context: nil)
+    }
+
+    private func unregisterObserver() {
+        displayView.removeObserver(self, forKeyPath: "image")
+    }
+
+    open override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        if let observer = object as? SlidingPhotoDisplayView, displayView === observer, nil != change?[.newKey] {
+            layoutContents()
+        } else {
+            super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
         }
     }
 }

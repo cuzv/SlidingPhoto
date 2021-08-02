@@ -8,8 +8,8 @@
 
 import UIKit
 
-@objc public protocol SlidingPhotoDisplayable: class {
-    var image: UIImage? { get set }
+@objc public protocol SlidingPhotoDisplayable: AnyObject {
+    dynamic var image: UIImage? { get set }
 }
 
 public typealias SlidingPhotoDisplayView = UIView & SlidingPhotoDisplayable

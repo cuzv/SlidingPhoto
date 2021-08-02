@@ -154,6 +154,9 @@ private final class PresentationAnimator: NSObject, UIViewControllerAnimatedTran
             return transitionContext.completeTransition(false)
         }
 
+        from.beginAppearanceTransition(false, animated: true)
+        to.beginAppearanceTransition(true, animated: true)
+
         let container = transitionContext.containerView
         toView.frame = container.bounds
         container.addSubview(toView)
@@ -163,6 +166,9 @@ private final class PresentationAnimator: NSObject, UIViewControllerAnimatedTran
         let slidingPhotoView = vc.slidingPhotoView
         let currentPage = slidingPhotoView.currentIndex
         let cell = slidingPhotoView.acquireCell(for: currentPage)
+        if !cell.prepared {
+            cell.prepared = true
+        }
         let displayView = cell.displayView
 
         let thumbnail = slidingPhotoView.dataSource?.slidingPhotoView?(slidingPhotoView, thumbnailForTransition: cell)
@@ -211,7 +217,6 @@ private final class PresentationAnimator: NSObject, UIViewControllerAnimatedTran
 
         displayView.alpha = 0
         otherViews.forEach({ $0.alpha = 0 })
-        from.beginAppearanceTransition(false, animated: true)
         UIView.animate(withDuration: transitionDuration(using: transitionContext), delay: 0, usingSpringWithDamping: 0.85 + 0.1 * springAdditionRatio, initialSpringVelocity: 0, options: [], animations: {
             otherViews.forEach({ $0.alpha = 1 })
 
@@ -235,6 +240,7 @@ private final class PresentationAnimator: NSObject, UIViewControllerAnimatedTran
             thumbnail?.alpha = 1
             transitionView?.removeFromSuperview()
             from.endAppearanceTransition()
+            to.endAppearanceTransition()
             transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
         })
     }
@@ -259,6 +265,8 @@ private final class DismissionAnimator: NSObject, UIViewControllerAnimatedTransi
         else {
             return transitionContext.completeTransition(false)
         }
+        from.beginAppearanceTransition(false, animated: true)
+        to.beginAppearanceTransition(true, animated: true)
 
         let container = transitionContext.containerView
         container.addSubview(fromView)
@@ -289,7 +297,6 @@ private final class DismissionAnimator: NSObject, UIViewControllerAnimatedTransi
             displayView.alpha = 0
         }
 
-        to.beginAppearanceTransition(true, animated: true)
         UIView.animate(withDuration: transitionDuration(using: transitionContext), delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 10, options: [], animations: {
             otherViews.forEach({ $0.alpha = 0 })
 
@@ -322,6 +329,7 @@ private final class DismissionAnimator: NSObject, UIViewControllerAnimatedTransi
             transitionView?.layer.anchorPoint = CGPoint(x: 0.5, y: 0.5)
             transitionView?.transform = .identity
             transitionView?.removeFromSuperview()
+            from.endAppearanceTransition()
             to.endAppearanceTransition()
             transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
         })

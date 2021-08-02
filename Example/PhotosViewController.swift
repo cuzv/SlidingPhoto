@@ -65,8 +65,8 @@ class PhotosViewController: UICollectionViewController, UICollectionViewDelegate
         cell.layoutIfNeeded()
         
         let url = UserDefaults.standard.loadOnlineImages ? remoteUrls[indexPath.item] : localUrls[indexPath.item]
-        cell.imageView.kf.setImage(with: url, completionHandler:  { [weak cell] (image, error, cacheType, url) in
-            cell?.imageView.sp.image = image
+        cell.imageView.kf.setImage(with: url, completionHandler:  { [weak cell] (result: Result<RetrieveImageResult, KingfisherError>) in
+            cell?.imageView.sp.image = (try? result.get())?.image
         })
         
         cell.layer.borderColor = UIColor.cyan.cgColor

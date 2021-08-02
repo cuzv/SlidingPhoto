@@ -82,12 +82,12 @@ class SlideViewController: SlidingPhotoViewController {
         let cell = cell as! CustomPhotoViewCell
         let url = UserDefaults.standard.loadOnlineImages ? remoteUrls[cell.index] : localUrls[cell.index]
         if let imageView = cell.displayView as? UIImageView {
-            imageView.kf.setImage(with: url, placeholder: imageView.image, options: [.backgroundDecode, .transition(.none)], progressBlock: { [weak cell] (current, total) in
+            imageView.kf.setImage(with: url, options: []) { [weak cell] (current, total) in
                 let progress = (CGFloat(current) / CGFloat(total)).nanToZero()
                 let displayProgress = progress - 0.1 > 0 ? progress - 0.1 : progress
                 cell?.progressLayer.strokeEnd = displayProgress
                 cell?.progressLayer.isHidden = false
-            }) { [weak cell] (image, error, cache, url) in
+            } completionHandler: { [weak cell] (result: Result<RetrieveImageResult, KingfisherError>) in
                 cell?.progressLayer.strokeEnd = 1
                 cell?.progressLayer.isHidden = true
             }
