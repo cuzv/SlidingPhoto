@@ -9,25 +9,24 @@
 import UIKit
 
 @objc public protocol SlidingPhotoDisplayable: AnyObject {
-    dynamic var image: UIImage? { get set }
+  dynamic var image: UIImage? { get set }
 }
 
-public typealias SlidingPhotoDisplayView = UIView & SlidingPhotoDisplayable
+public typealias SlidingPhotoDisplayView = SlidingPhotoDisplayable & UIView
 
-extension UIImageView: SlidingPhotoDisplayable {
-}
+extension UIImageView: SlidingPhotoDisplayable {}
 
 @objc public protocol SlidingPhotoViewDataSource: NSObjectProtocol {
-    @objc func numberOfItems(in slidingPhotoView: SlidingPhotoView) -> Int
-    @objc func slidingPhotoView(_ slidingPhotoView: SlidingPhotoView, prepareForDisplay cell: SlidingPhotoViewCell)
-    /// Thumbnail for present animation.
-    @objc optional func slidingPhotoView(_ slidingPhotoView: SlidingPhotoView, thumbnailForTransition cell: SlidingPhotoViewCell) -> SlidingPhotoDisplayView?
+  @objc func numberOfItems(in slidingPhotoView: SlidingPhotoView) -> Int
+  @objc func slidingPhotoView(_ slidingPhotoView: SlidingPhotoView, prepareForDisplay cell: SlidingPhotoViewCell)
+  /// Thumbnail for present animation.
+  @objc optional func slidingPhotoView(_ slidingPhotoView: SlidingPhotoView, thumbnailForTransition cell: SlidingPhotoViewCell) -> SlidingPhotoDisplayView?
 }
 
 @objc public protocol SlidingPhotoViewDelegate: NSObjectProtocol {
-    @objc optional func slidingPhotoView(_ slidingPhotoView: SlidingPhotoView, didUpdateFocus cell: SlidingPhotoViewCell)
-    @objc optional func slidingPhotoView(_ slidingPhotoView: SlidingPhotoView, didEndDisplaying cell: SlidingPhotoViewCell)
+  @objc optional func slidingPhotoView(_ slidingPhotoView: SlidingPhotoView, didUpdateFocus cell: SlidingPhotoViewCell)
+  @objc optional func slidingPhotoView(_ slidingPhotoView: SlidingPhotoView, didEndDisplaying cell: SlidingPhotoViewCell)
 
-    @objc optional func slidingPhotoView(_ slidingPhotoView: SlidingPhotoView, didSingleTapped cell: SlidingPhotoViewCell, at location: CGPoint)
-    @objc optional func slidingPhotoView(_ slidingPhotoView: SlidingPhotoView, didLongPressed cell: SlidingPhotoViewCell, at location: CGPoint)
+  @objc optional func slidingPhotoView(_ slidingPhotoView: SlidingPhotoView, didSingleTapped cell: SlidingPhotoViewCell, at location: CGPoint)
+  @objc optional func slidingPhotoView(_ slidingPhotoView: SlidingPhotoView, didLongPressed cell: SlidingPhotoViewCell, at location: CGPoint)
 }

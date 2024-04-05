@@ -9,8 +9,7 @@
 import SlidingPhoto
 
 final class NibPhotoCell: SlidingPhotoViewCell {
-    static var nib: UINib {
-        return UINib(nibName: String(describing: self), bundle: Bundle(for: self))
-    }
+  static var nib: UINib {
+    UINib(nibName: String(describing: self), bundle: Bundle(for: self))
+  }
 }
-
