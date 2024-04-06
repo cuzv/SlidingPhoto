@@ -182,6 +182,8 @@ open class SlidingPhotoView: UIView {
   }
 }
 
+// MARK: - UIScrollViewDelegate
+
 extension SlidingPhotoView: UIScrollViewDelegate {
   public func scrollViewDidScroll(_ scrollView: UIScrollView) {
     guard let dataSource else { return }
@@ -260,7 +262,7 @@ extension SlidingPhotoView: UIScrollViewDelegate {
   }
 }
 
-// MARK: - Gestures
+// MARK: - Gestures Handlers
 
 private extension SlidingPhotoView {
   @objc private func onSingleTap(sender: UITapGestureRecognizer) {
@@ -280,6 +282,8 @@ private extension SlidingPhotoView {
     delegate.slidingPhotoView?(self, didLongPressed: cell, at: touchPoint)
   }
 }
+
+// MARK: - UIGestureRecognizerDelegate
 
 extension SlidingPhotoView: UIGestureRecognizerDelegate {
   override open func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
