@@ -31,6 +31,10 @@ open class SlidingPhotoViewController: UIViewController {
     return view
   }()
 
+  open var panDimsissAnimationStyle: PanDimsissAnimationStyle {
+    .recover
+  }
+
   public let slidingPhotoView: SlidingPhotoView = {
     let view = SlidingPhotoView()
     view.translatesAutoresizingMaskIntoConstraints = false
@@ -40,6 +44,8 @@ open class SlidingPhotoViewController: UIViewController {
   var otherViews: [UIView] {
     view.subviews.filter { $0 != slidingPhotoView }
   }
+
+  private var originalCenter: CGPoint = .zero
 
   override open func viewDidLoad() {
     super.viewDidLoad()
@@ -89,11 +95,12 @@ extension SlidingPhotoViewController {
   @objc private func onPan(sender: UIPanGestureRecognizer) {
     switch sender.state {
     case .began:
+      originalCenter = slidingPhotoView.center
       otherViews.forEach { $0.sp.alpha = $0.alpha }
     case .changed:
       let translation = sender.translation(in: sender.view).y.nanToZero()
       let ratio = abs(translation / view.bounds.size.height).nanToZero()
-      slidingPhotoView.transform = CGAffineTransform(translationX: 0, y: translation)
+      slidingPhotoView.center = originalCenter.applying(.init(translationX: 0, y: translation))
       otherViews.forEach { let alpha = $0.sp.alpha - ratio; $0.alpha = alpha < 0 ? 0 : alpha }
     case .ended:
       let velocity = sender.velocity(in: sender.view).y
@@ -101,30 +108,36 @@ extension SlidingPhotoViewController {
       let isMoveUp = velocity < -1000 && translation < 0
       let isMoveDown = velocity > 1000 && translation > 0
       if isMoveUp || isMoveDown {
-        willDismissByPanGesture()
+        switch panDimsissAnimationStyle {
+        case .continuance:
+          willDismissByPanGesture()
 
-        let height = slidingPhotoView.bounds.size.height.nanToZero()
-        let duration = TimeInterval(0.25 * (height - abs(translation)) / height).nanToZero()
-        let translationY = height * (isMoveUp ? -1.0 : 1.0)
-        UIView.animate(withDuration: duration, delay: 0, options: [.curveEaseOut, .beginFromCurrentState], animations: {
-          self.slidingPhotoView.transform = CGAffineTransform(translationX: 0, y: translationY)
-          self.otherViews.forEach { $0.alpha = 0 }
-        }, completion: { _ in
-          let vc = self.presentingViewController
-          vc?.beginAppearanceTransition(true, animated: false)
-          vc?.dismiss(animated: false) {
-            vc?.endAppearanceTransition()
-            self.didDismissByPanGesture()
-          }
-        })
+          let height = slidingPhotoView.bounds.size.height.nanToZero()
+          let duration = TimeInterval(0.25 * (height - abs(translation)) / height).nanToZero()
+          let translationY = height * (isMoveUp ? -1.0 : 1.0)
+
+          UIView.animate(withDuration: duration, delay: 0, options: [.curveEaseOut, .beginFromCurrentState], animations: {
+            self.slidingPhotoView.transform = CGAffineTransform(translationX: 0, y: translationY)
+            self.otherViews.forEach { $0.alpha = 0 }
+          }, completion: { _ in
+            let vc = self.presentingViewController
+            vc?.beginAppearanceTransition(true, animated: false)
+            vc?.dismiss(animated: false) {
+              vc?.endAppearanceTransition()
+              self.didDismissByPanGesture()
+            }
+          })
+        case .recover:
+          presentingViewController?.dismiss(animated: true)
+        }
       } else {
         UIView.animate(withDuration: 0.25, delay: 0, options: [.curveEaseOut, .beginFromCurrentState, .allowUserInteraction], animations: {
-          self.slidingPhotoView.transform = .identity
+          self.slidingPhotoView.center = self.originalCenter
           self.otherViews.forEach { $0.alpha = $0.sp.alpha }
         }, completion: nil)
       }
     default:
-      slidingPhotoView.transform = .identity
+      slidingPhotoView.center = originalCenter
       otherViews.forEach { $0.alpha = $0.sp.alpha }
     }
   }
@@ -139,5 +152,14 @@ extension SlidingPhotoViewController: UIViewControllerTransitioningDelegate {
 
   public func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
     DismissionAnimator(vc: self)
+  }
+}
+
+// MARK: -
+
+public extension SlidingPhotoViewController {
+  enum PanDimsissAnimationStyle {
+    case continuance
+    case recover
   }
 }
