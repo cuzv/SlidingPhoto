@@ -13,4 +13,8 @@ Pod::Spec.new do |s|
   s.source_files = "Sources/*.{h,swift}"
   s.frameworks   = 'Foundation', 'UIKit'
   s.swift_versions = '5'
+
+  s.resource_bundles = {
+    'SlidingPhoto' => ['Resources/PrivacyInfo.xcprivacy']
+  }
 end
