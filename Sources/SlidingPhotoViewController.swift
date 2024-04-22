@@ -98,11 +98,11 @@ extension SlidingPhotoViewController {
         otherView.sp.alpha = otherView.alpha
       }
     case .changed:
-      let moveY = sender.translation(in: sender.view).y.nanToZero()
-      let ratio = abs(moveY / view.bounds.size.height).nanToZero()
-      let scale = 1.0 - min(abs(moveY / 100), 1.0) * 0.2
+      let move = sender.translation(in: sender.view).nanToZero()
+      let ratio = abs(move.y / view.bounds.size.height).nanToZero()
+      let scale = 1.0 - min(abs(move.y / 100), 1.0) * 0.2
       slidingPhotoView.transform = .identity
-        .translatedBy(x: 0, y: moveY)
+        .translatedBy(x: move.x, y: move.y)
         .scaledBy(x: scale, y: scale)
       for otherView in otherViews {
         otherView.alpha = max(otherView.sp.alpha - ratio, 0)
