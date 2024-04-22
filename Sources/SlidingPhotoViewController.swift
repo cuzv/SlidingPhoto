@@ -45,8 +45,6 @@ open class SlidingPhotoViewController: UIViewController {
     view.subviews.filter { $0 != slidingPhotoView }
   }
 
-  private var originalCenter: CGPoint = .zero
-
   override open func viewDidLoad() {
     super.viewDidLoad()
 
@@ -95,13 +93,20 @@ extension SlidingPhotoViewController {
   @objc private func onPan(sender: UIPanGestureRecognizer) {
     switch sender.state {
     case .began:
-      originalCenter = slidingPhotoView.center
-      otherViews.forEach { $0.sp.alpha = $0.alpha }
+      slidingPhotoView.transform = .identity
+      for otherView in otherViews {
+        otherView.sp.alpha = otherView.alpha
+      }
     case .changed:
-      let translation = sender.translation(in: sender.view).y.nanToZero()
-      let ratio = abs(translation / view.bounds.size.height).nanToZero()
-      slidingPhotoView.center = originalCenter.applying(.init(translationX: 0, y: translation))
-      otherViews.forEach { let alpha = $0.sp.alpha - ratio; $0.alpha = alpha < 0 ? 0 : alpha }
+      let moveY = sender.translation(in: sender.view).y.nanToZero()
+      let ratio = abs(moveY / view.bounds.size.height).nanToZero()
+      let scale = 1.0 - min(abs(moveY / 100), 1.0) * 0.2
+      slidingPhotoView.transform = .identity
+        .translatedBy(x: 0, y: moveY)
+        .scaledBy(x: scale, y: scale)
+      for otherView in otherViews {
+        otherView.alpha = max(otherView.sp.alpha - ratio, 0)
+      }
     case .ended:
       let velocity = sender.velocity(in: sender.view).y
       let translation = sender.translation(in: sender.view).y
@@ -114,31 +119,40 @@ extension SlidingPhotoViewController {
 
           let height = slidingPhotoView.bounds.size.height.nanToZero()
           let duration = TimeInterval(0.25 * (height - abs(translation)) / height).nanToZero()
-          let translationY = height * (isMoveUp ? -1.0 : 1.0)
+          let moveY = height * (isMoveUp ? -1.0 : 1.0)
 
           UIView.animate(withDuration: duration, delay: 0, options: [.curveEaseOut, .beginFromCurrentState], animations: {
-            self.slidingPhotoView.transform = CGAffineTransform(translationX: 0, y: translationY)
-            self.otherViews.forEach { $0.alpha = 0 }
+            self.slidingPhotoView.transform = .init(translationX: 0, y: moveY)
+            for otherView in self.otherViews {
+              otherView.alpha = 0
+            }
           }, completion: { _ in
-            let vc = self.presentingViewController
-            vc?.beginAppearanceTransition(true, animated: false)
-            vc?.dismiss(animated: false) {
-              vc?.endAppearanceTransition()
-              self.didDismissByPanGesture()
+            if let pvc = self.presentingViewController {
+              pvc.beginAppearanceTransition(true, animated: false)
+              pvc.dismiss(animated: false) {
+                pvc.endAppearanceTransition()
+                self.didDismissByPanGesture()
+              }
             }
           })
         case .recover:
+          view.setNeedsLayout()
+          view.layoutIfNeeded()
           presentingViewController?.dismiss(animated: true)
         }
       } else {
         UIView.animate(withDuration: 0.25, delay: 0, options: [.curveEaseOut, .beginFromCurrentState, .allowUserInteraction], animations: {
-          self.slidingPhotoView.center = self.originalCenter
-          self.otherViews.forEach { $0.alpha = $0.sp.alpha }
+          self.slidingPhotoView.transform = .identity
+          for otherView in self.otherViews {
+            otherView.alpha = otherView.sp.alpha
+          }
         }, completion: nil)
       }
     default:
-      slidingPhotoView.center = originalCenter
-      otherViews.forEach { $0.alpha = $0.sp.alpha }
+      slidingPhotoView.transform = .identity
+      for otherView in otherViews {
+        otherView.alpha = otherView.sp.alpha
+      }
     }
   }
 }
