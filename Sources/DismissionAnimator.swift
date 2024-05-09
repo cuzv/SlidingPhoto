@@ -84,7 +84,7 @@ final class DismissionAnimator: NSObject, UIViewControllerAnimatedTransitioning 
       transitionView?.layer.anchorPoint = CGPoint(x: 0.5, y: 0.5)
       transitionView?.transform = .identity
       transitionView?.removeFromSuperview()
-      vc?.onDimissCompletion()
+      vc?.dimissionDidComplete()
       from.endAppearanceTransition()
       to.endAppearanceTransition()
       transitionContext.completeTransition(!transitionContext.transitionWasCancelled)

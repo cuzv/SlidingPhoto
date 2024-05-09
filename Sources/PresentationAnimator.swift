@@ -106,7 +106,7 @@ final class PresentationAnimator: NSObject, UIViewControllerAnimatedTransitionin
       displayView.alpha = 1
       thumbnail?.alpha = 1
       transitionView?.removeFromSuperview()
-      vc?.onPresentCompletion()
+      vc?.presentationDidComplete()
       from.endAppearanceTransition()
       to.endAppearanceTransition()
       transitionContext.completeTransition(!transitionContext.transitionWasCancelled)

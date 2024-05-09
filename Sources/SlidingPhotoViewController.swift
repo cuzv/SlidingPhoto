@@ -64,13 +64,13 @@ open class SlidingPhotoViewController: UIViewController {
 
     slidingPhotoView.delegate = self
     slidingPhotoView.dataSource = self
-    slidingPhotoView.panGestureRecognizer.addTarget(self, action: #selector(onPan(sender:)))
+    slidingPhotoView.panGestureRecognizer.addTarget(self, action: #selector(handlePan(sender:)))
   }
 
   open func willDismissByPanGesture() {}
   open func didDismissByPanGesture() {}
-  open func onPresentCompletion() {}
-  open func onDimissCompletion() {}
+  open func presentationDidComplete() {}
+  open func dimissionDidComplete() {}
 }
 
 // MARK: - SlidingPhotoViewDataSource, SlidingPhotoViewDelegate
@@ -90,7 +90,7 @@ extension SlidingPhotoViewController: SlidingPhotoViewDataSource, SlidingPhotoVi
 // MARK: - UIPanGestureRecognizer
 
 extension SlidingPhotoViewController {
-  @objc private func onPan(sender: UIPanGestureRecognizer) {
+  @objc private func handlePan(sender: UIPanGestureRecognizer) {
     switch sender.state {
     case .began:
       slidingPhotoView.transform = .identity

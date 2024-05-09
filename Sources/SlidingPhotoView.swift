@@ -128,15 +128,15 @@ open class SlidingPhotoView: UIView {
     scrollViewWidthAnchor = scrollView.widthAnchor.constraint(equalTo: widthAnchor, constant: pageSpacing)
     scrollViewWidthAnchor.isActive = true
 
-    let singleTap = UITapGestureRecognizer(target: self, action: #selector(onSingleTap(sender:)))
+    let singleTap = UITapGestureRecognizer(target: self, action: #selector(handleSingleTap(sender:)))
     addGestureRecognizer(singleTap)
 
-    let doubleTap = UITapGestureRecognizer(target: self, action: #selector(onDoubleTap(sender:)))
+    let doubleTap = UITapGestureRecognizer(target: self, action: #selector(handleDoubleTap(sender:)))
     doubleTap.numberOfTapsRequired = 2
     singleTap.require(toFail: doubleTap)
     addGestureRecognizer(doubleTap)
 
-    let longPress = UILongPressGestureRecognizer(target: self, action: #selector(onLongPress(sender:)))
+    let longPress = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(sender:)))
     addGestureRecognizer(longPress)
 
     panGestureRecognizer = UIPanGestureRecognizer()
@@ -265,18 +265,18 @@ extension SlidingPhotoView: UIScrollViewDelegate {
 // MARK: - Gestures Handlers
 
 private extension SlidingPhotoView {
-  @objc private func onSingleTap(sender: UITapGestureRecognizer) {
+  @objc private func handleSingleTap(sender: UITapGestureRecognizer) {
     guard sender.state == .ended, let cell = loadedCell(of: currentIndex), let delegate else { return }
     let touchPoint = sender.location(in: cell)
     delegate.slidingPhotoView?(self, didSingleTapped: cell, at: touchPoint)
   }
 
-  @objc private func onDoubleTap(sender: UITapGestureRecognizer) {
+  @objc private func handleDoubleTap(sender: UITapGestureRecognizer) {
     guard sender.state == .ended, let cell = loadedCell(of: currentIndex) else { return }
-    cell.onDoubleTap(sender: sender)
+    cell.handleDoubleTap(sender: sender)
   }
 
-  @objc private func onLongPress(sender: UILongPressGestureRecognizer) {
+  @objc private func handleLongPress(sender: UILongPressGestureRecognizer) {
     guard sender.state == .ended, let cell = loadedCell(of: currentIndex), let delegate else { return }
     let touchPoint = sender.location(in: cell)
     delegate.slidingPhotoView?(self, didLongPressed: cell, at: touchPoint)

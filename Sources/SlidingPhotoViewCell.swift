@@ -116,7 +116,7 @@ open class SlidingPhotoViewCell: UIView {
     scrollView.contentInset = UIEdgeInsets(top: top, left: left, bottom: top, right: left)
   }
 
-  func onDoubleTap(sender: UITapGestureRecognizer) {
+  func handleDoubleTap(sender: UITapGestureRecognizer) {
     if isContentZoomed {
       isContentZoomed.toggle()
     } else {
